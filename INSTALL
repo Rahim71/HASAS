@@ -1,0 +1,397 @@
+To run this software under RedHat Linux 9 or SuSE Linux 8.2 you may need some
+additional software installed. Go to http://www.sonarnerd.net/linux/ for
+compiled binary RPM's of required/modified software.
+
+To get XMMS load the HASAS streamdist output plugin, install the plugin:
+"cp libhasas.* `xmms-config --output-plugin-dir`"
+
+Edit .cfg files to match your system. See included versions for example.
+
+soundsrv.<device>.cfg:
+
+	Channels <int>		Number of channels
+	SampleRate <int>	Sampling rate
+	Port <int>		TCP port to use for server service
+
+soundsrv2.cfg:
+
+	Device <filename>	Device to use (eg. /dev/dsp0)
+	Channels <int>		Number of channels to use
+	SampleRate <int>	Sampling rate to use
+	Bits <int>		Input resolution 8, 16, 24 or 32
+	Port <int>		TCP port for server service
+	FragSize <int>		Size of fragment (in bytes), 4096 recommended,
+				0 for driver's default
+	BufferFrags <int>	Number of device fragments for TCP send buffer
+	Compress <int>		Enable/disable lossless audio compression for
+				slowspeed connections; 0 = disable, 1 = enable
+	FLACMaxLPCOrder <int>	See FLAC documentation
+	FLACMinRiceOrder <int>	See FLAC documentation
+	FLACMaxRiceOrder <int>	See FLAC documentation
+
+soundsrva.cfg:
+
+	Card <int>		Card number
+	Device <int>		Device number
+	SubDevice <int>		Subdevice number (or -1 for no subdevice)
+	Channels <int>		Number of channels
+	SampleRate <int>	Sampling rate to use
+	Bits <int>		Word length, 16, 24 or 32 bits
+	Port <int>		TCP port for server service
+	FragSize <int>		Size of fragment (in bytes), 4096 recommended
+	FragCount <int>		Number of fragments to buffer
+	BufferFrags <int>	Number of device fragments for TCP send buffer
+	Compress <int>		Enable/disable lossless audio compression for
+				slowspeed connections; 0 = disable, 1 = enable
+	FLACMaxLPCOrder <int>	See FLAC documentation
+	FLACMinRiceOrder <int>	See FLAC documentation
+	FLACMaxRiceOrder <int>	See FLAC documentation
+
+comedisrv:
+
+	Device <filename>	Device to use (eg. /dev/dsp0)
+	Channels <int>		Number of channels to use
+	SampleRate <float>	Sampling rate to use
+	DoubleClock <int>	Use scan/sample clocks instead of one (scan);
+				0 = disable, 1 = enable
+	Bits <int>		Input resolution 8, (12,) 16, 24 or 32
+	Range <float>		Range used for input, in volts
+	Port <int>		TCP port for server service
+	FragSize <int>		Size of fragment (in bytes), 4096 recommended,
+				0 for driver's default
+	BufferFrags <int>	Number of device fragments for TCP send buffer
+	Compress <int>		Enable/disable lossless audio compression for
+				slowspeed connections; 0 = disable, 1 = enable
+	FLACMaxLPCOrder <int>	See FLAC documentation
+	FLACMinRiceOrder <int>	See FLAC documentation
+	FLACMaxRiceOrder <int>	See FLAC documentation
+
+filesrv.cfg:
+
+	FragSize <int>		Size of datablock used for processing, 
+				in bytes.
+	Port <int>		TCP port for server service
+
+streamdist.cfg:
+
+	Server <host or IP>	Address of soundsrv server to use
+	ServerPort <int>	Port number of soundsrv server to use
+	LocalSocket <filename>	Local UNIX domain socket for server service
+
+soundproxy.cfg:
+
+	LogFile <filename>	Log file
+	ServerHost <host or IP>	Address of soundsrv server to use
+	ServerPort <int>	Port number for soundsrv server to use
+	Port <int>		Port number for proxy service
+
+savesrv.cfg:
+
+	SavePath <path/file>	Path and start of filename where audiofile
+				is saved
+	Format <int>		Format of audiofile; 0 = WAV (RIFF), 1 = AIFF,
+				2 = FLAC
+	Type <int>		Type of audiofile; 0 = PCM, 1 = float,
+				2 = IMA ADPCM, 3 = MS ADPCM
+	Bits <int>		Resolution of audiofile; 8, 16, 24 or 32
+	Dither <0|1|2>		Enable/disable dithering; 0 = disable,
+				1 = enable, 2 = dithered by libsndfile
+	FrameLength <int>	Frame length (in samples) used when receiving
+				data and saving to file, default is 8192
+	FileTime <int>		Size of single save file in minutes, a new file
+				is started every N minutes
+	FLACMaxLPCOrder <int>	See FLAC documentation
+	FLACMinRiceOrder <int>	See FLAC documentation
+	FLACMaxRiceOrder <int>	See FLAC documentation
+
+uiserv.cfg:
+
+	Port <int>		TCP port to use for server service
+
+beamsrv.cfg:
+
+	FilterType <int>	Type of decimation filter to use;
+				0 = FFT, 1 = FIR, 2 = IIR
+	Type <int>		Array type; 0 = dipole, 1 = triangle,
+				2 = line, 3 = plane, 4 = cylinder, 5 = sphere
+	Sensors <int>		Number of sensors in array
+	Spacing <float>		Spacing (distance) of sensors in array (m)
+	SoundSpeed <float>	Speed of sound to use for beamforming (m/s)
+	Beams <int>		Number of beams to form
+	WindowSize <int>	Size of beamforming FFT window
+	BlockSize <int>		Communication block size
+	StreamSource <filename>	Name of streamdist socket file
+	ChOffset <int>		Starting channel offset of array in input data
+				stream
+	Port <int>		TCP port for server service
+
+spectrum.cfg:
+
+	FilterSize <int>	Size of filter (default 4096) or negative for
+				automatic size where |size| is buffer size
+	FilterType <int>	Type of decimation filter to use;
+				0 = FFT, 1 = FIR, 2 = IIR
+
+direction.cfg:
+
+	ProcessorCount <int>	Number of processors to use (1-8)
+	StartChannel <int>	Data for this array starts at this channel
+				(0-based)
+	ArrayType <int>		Type of array; 0 = Dipole, 1 = Triangle,
+				2 = Line, 3 = Plane, 4 = Cylinder, 5 = Sphere
+	ShadingType <int>	Type of array shading to use; 0 = None,
+				1 = Blackman, 2 = Kaiser-Bessel
+	HorizontalSensors <int> Number of sensors in horizontal direction
+	HorizontalSpacings <float list>
+				Horizontal sensor spacing in meters
+	VerticalSensors <int>	Number of sensors in vertical direction
+	VerticalSpacings <float list>
+				Vertical sensor spacing in meters
+	SensorSpacing <float>	Sensor spacing for dipole and triangle arrays
+				(meters)
+	WindowSize <int>	Size for array window (default 2048)
+				Filter size is 2 * WindowSize
+
+direction2.cfg:
+
+	ArrayType <int>		Type of array; 0 = Dipole, 1 = Triangle,
+				2 = Line, 3 = Plane, 4 = Cylinder, 5 = Sphere
+	SensorCount <int>	Number of sensors in array
+	SensorSpacing <float>	Distance of sensors (meters)
+	FilterSize <int>	Number of filter coefficients, or negative for
+				automatic where |size| is buffer size
+	WindowSize <int>	Size of DFT window
+	StartChannel <int>	Data for this array starts at this channel
+				(0-based)
+	FilterType <int>	Type of decimation filter to use;
+				0 = FFT, 1 = FIR, 2 = IIR
+
+direction3.cfg:
+
+	ArrayType <int>		Type of array; 0 = Dipole, 1 = Triangle,
+				2 = Line, 3 = Plane, 4 = Cylinder, 5 = Sphere
+	SensorCount <int>	Number of sensors in array
+	SensorSpacing <float>	Distance of sensors (meters)
+	FilterSize <int>	Number of filter coefficients, or negative for
+				automatic where |size| is buffer size
+	StartChannel <int>	Data for this array starts at this channel
+				(0-based)
+	FilterType <int>	Type of decimation filter to use;
+				0 = FFT, 1 = FIR, 2 = IIR
+
+lofardemon.cfg:
+
+	FilterSize <int>	Size of filter (default 4096) or negative for
+				automatic size where |size| is buffer size
+	FilterType <int>	Type of decimation filter to use;
+				0 = FFT, 1 = FIR, 2 = IIR
+	DEMONDecimation <int>	Decimation factor for DEMON processing
+	DEMONDCNotch <0|1>	Use IIR DC-notch in intermediate DEMON
+				processing
+
+beamaudio.cfg:
+
+	StartCh <int>		Data for this sensor starts at this channel
+				(0-based)
+	ArrayType <int>		Type of this array; 0 = Dipole, 1 = Triangle,
+				2 = Line, 3 = Plane, 4 = Cylinder, 5 = Sphere
+	WindowSize <int>	Window size for beamforming, frequency
+				resolution is WindowSize + 1
+	SensorCount <int>	Number of sensors in array
+	SensorSpacing <float>	Distance between individual sensors, in meters
+	Shading <int>		Array shading; 0 = Rectangle, 1 = Blackman,
+				2 = Kaiser-Bessel
+
+level.cfg:
+
+	FilterSize <int>	Size of filter (default 4096)
+
+locate.cfg:
+
+	Width <int>		Width of result matrix (in points)
+	Height <int>		Height of result matrix (in points)
+	Weight <float>		Weight of new result (epsilon - 1.0)
+	Port <int>		Port number for server service
+	WindowSize <int>	Size of DFT window
+	SoundSpeed <float>	Speed of sound to use for calculations
+	LowFrequency <float>	Lower frequency limit (in Hz)
+	IntegrationTime <float>	Integration time for single result (in seconds)
+	Scaling <int>		Scaling for levels; 0 = Linear, 
+				1 = Logarithmic (dB), 2 = Exponential,
+				3 = Sine (1/4)
+	ScalingExp <float>	Exponent for exponential scaling
+	RemoveNoise <int>	Background noise estimation and removal
+				algorithm; 0 = None, 1 = Two-Pass Split-Window,
+				2 = Order-Truncate-Average, 3 = Differential,
+				4 = Inverse differential
+	Alpha <float>		Strong value rejection coefficient for TPSW
+				and OTA algorithms
+	MeanLength <int>	Size of noise estimation window
+	GapLength <int>		Gap size for TPSW algorithm
+
+locate.sensors:
+
+	<hostname> <port> <X position> <Y position> <azimuth>
+
+	Where <hostname> and <port> is uiserv for this sensor,
+	<X position> and <Y position> is sensor position on result matrix and
+	<azimuth> is sensor direction (in degrees)
+
+guispect.cfg:
+
+	Width <int>		Default window width
+	Height <int>		Default window height
+	Fit <int>		Fit-to-screen; 0 = no fit, 1 = nearest,
+				2 = average
+	Palette <int>		Default palette; 0 = BW, 1 = HSV, 2 = Light,
+				3 = Temp, 4 = Dir, 5 = Green, 6 = Green2,
+				7 = PureGreen, 8 = WB
+	TIFFCompression <int>	TIFF compression mode; 0 = None, 1 = RLE,
+				2 = LZW, 3 = JPEG, 4 = Deflate
+	JPEGQuality <int>	JPEG quality for JPEG encoded TIFF; 0 - 100
+	BeamCount <int>		Number of beams produced by the beamformer;
+				0 = beamformer not used
+
+guidir.cfg:
+
+	Palette <int>		Default palette; 0 = BW, 1 = HSV, 2 = Light,
+				3 = Temp, 4 = Dir, 5 = Green, 6 = Green2,
+				7 = PureGreen, 8 = WB
+	HistoryLines <int>	Number of history lines in direction window
+	SoundSpeed <float>	Default speed of sound (default 1430.0)
+	DirectionScale <int>	Default direction scale factor
+	TIFFCompression <int>   TIFF compression mode; 0 = None, 1 = RLE,
+                                2 = LZW, 3 = JPEG, 4 = Deflate
+        JPEGQuality <int>       JPEG quality for JPEG encoded TIFF; 0 - 100
+	ContSaveScans <int>	Number of scanlines to continuously save to
+				single file before starting new one
+
+guilofar.cfg:
+
+	WindowLength <int>	Default window length
+	LowFrequency <float>	Default lower corner frequency
+	HighFrequency <float>	Default higher corner frequency
+	RemoveNoise <int>	Default background noise estimation and removal
+				algorithm (see README)
+	Alpha <float>		Default alpha for noise removal (see README)
+	MeanLength <int>	Default mean length (see README)
+	GapLength <int>		Default gap length (see README)
+	AverageCount <int>	Number of spectrums to average
+	Clip <int>		Default clipping type 0 = None, 1 = Low,
+				2 = Both, 3 = Mean, 4 = Median, 5 = 10 dB, 
+				6 = 20 dB, 7 = 50%, 8 = 75%, 9 = Offset
+	Fit <int>		Fit-to-screen; 0 = no fit, 1 = nearest,
+				2 = average
+	Palette <int>		Default palette; 0 = BW, 1 = HSV, 2 = Light,
+				3 = Temp, 4 = Dir, 5 = Green, 6 = Green2,
+				7 = PureGreen, 8 = WB
+	Height <int>		Startup lofar window height
+	TIFFCompression <int>   TIFF compression mode; 0 = None, 1 = RLE,
+                                2 = LZW, 3 = JPEG, 4 = Deflate
+        JPEGQuality <int>       JPEG quality for JPEG encoded TIFF; 0 - 100
+	ContSaveScans <int>	Number of scanlines to continuously save to
+				single file before starting new one
+	BeamCount <int>		Number of beams produced by the beamformer;
+				0 = beamformer not used
+
+guilevel.cfg:
+
+	DisplayLow <int>	Lower limit of display, in dB
+	DisplayHigh <int>	Higher limit of display, in dB
+	IntegrationTime <int>	Integration time for single result
+	BeamCount <int>		Number of beams produced by the beamformer;
+				0 = beamformer not used
+
+guilocate.cfg:
+
+	Palette <int>		Default palette; 0 = BW, 1 = HSV, 2 = Light,
+				3 = Temp, 4 = Dir, 5 = Green, 6 = Green2,
+				7 = PureGreen, 8 = WB
+
+soundui.cfg:
+
+	Device <filename>	Device file to use for sound output
+	DeviceBase <int>	-1 = Internal mixing, 0..N = SoftOSS device
+				start
+	UseALSA <int>		Use ALSA interface; 0 = disable, 1 = enable
+	ALSACard <int>		ALSA card number
+	ALSADevice <int>	ALSA device number
+	ALSASubDevice <int>	ALSA subdevice number or -1 for no subdevice
+	Channels <int>		Number of channels for sound output
+	SampleRate <int>	Output sample rate, must be same as input
+	SampleCount <int>	Number of samples/channel to buffer
+				Eq filter size is SampleCount * 2
+	UpdateInterval <int>	Level meter update interval, in msecs
+	DCBlock <int>		DC-block for Eq; 0 = disabled, 1 = enabled
+
+beamaudioui.cfg:
+
+	AudioDevice <filename>	Device for audio output
+	UseALSA <int>		Use ALSA interface; 0 = disable, 1 = enable
+	ALSACard <int>		ALSA card number
+	ALSADevice <int>	ALSA device number
+	ALSASubDevice <int>	ALSA subdevice number or -1 for no subdevice
+
+
+Note! Make sure that specified log file directories exist.
+
+You can create host lists for each GUI by editing the *.hosts files. First
+entry on the list is default on startup.
+
+If you like to run multiple instances of servers in one computer, just
+extract binaries to one directory and make symbolic links to subdirectories.
+Then create .cfg files to those subdirectories and start processes.
+
+If you like to change the font in saved .tif files, just copy another 
+TrueType .ttf font file over fbfont.ttf.
+
+Example:
+
+	hasas/
+		hasas/bin/
+			soundsrv2
+			streamdist
+			uiserv
+			spectrum
+			direction
+			direction2
+			lofardemon
+			soundproxy
+			beamaudio
+			level
+		hasas/server1/
+			soundsrv2 -> ../bin/soundsrv2
+			streamdist -> ../bin/streamdist
+			uiserv -> ../bin/uiserv
+			spectrum -> ../bin/spectrum
+			direction -> ../bin/direction
+			direction2 -> ../bin/direction2
+			lofardemon -> ../bin/lofardemon
+			beamaudio -> ../bin/beamaudio
+			level -> ../bin/level
+			soundsrv2.cfg
+			streamdist.cfg
+			uiserv.cfg
+			spectrum.cfg
+			direction.cfg
+			lofardemon.cfg
+			beamaudio.cfg
+			level.cfg
+		hasas/server2/
+                        soundproxy -> ../bin/soundproxy
+			streamdist -> ../bin/streamdist
+                        uiserv -> ../bin/uiserv
+                        spectrum -> ../bin/spectrum
+			direction -> ../bin/direction
+			direction2 -> ../bin/direction2
+			lofardemon -> ../bin/lofardemon
+			beamaudio -> ../bin/beamaudio
+			level -> ../bin/level
+                        soundproxy.cfg
+			streamdist.cfg
+                        uiserv.cfg
+			spectrum.cfg
+			direction.cfg
+			lofardemon.cfg
+			beamaudio.cfg
+			level.cfg
