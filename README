@@ -1,0 +1,191 @@
+For installation instructions, read INSTALL.
+
+Please remember to send a postcard to me!
+
+To start system, first start soundsrv2 servers then streamdist servers and
+last uiserv server. Then start UI processes. Stop processes (except GUI) by
+pressing Ctrl-C, sending SIGHUP (if in daemon mode) or by creating file 
+<servername>.shutdown to /tmp directory. There is also "start" script to start
+servers and "stop" script to stop them. If you like to use the target locator,
+then start also locate using mpirun (refer to MPI documentation for details).
+Number of needed nodes is N+1 where N is number of sensors.
+
+If you are running the soundsrv in one machine and the uiserv in other(s), 
+it is strongly recommended that you use the soundproxy server, especially if
+network link from soundsrv is slow. The soundproxy acts as soundsrv to it's
+clients, it just relays data from real soundsrv. Using soundproxy you need
+to transfer data only once from the soundsrv.
+
+There are six versions of soundsrv (input server). The soundsrv2 is complete
+rewrite of soundsrv using threads, it doesn't need select() support from the
+soundcard driver as opposed to old soundsrv. The soundsrva is ALSA version
+of soundsrv and filesrv is server for playing back previously saved files
+(by savesrv). The comedisrv is version for Comedi compatible DAQ cards.
+The beamsrv is beamforming input server which does beamforming on the input
+data (from streamdist) and represents each beam as a channel.
+
+This software has been tested to work with:
+
+ - Ensoniq AudioPCI ES1370	(OSS 3.9.x, ALSA 0.5.x)
+ - Creative SoundBlaster 16	(Kernel driver, OSS 3.9.x)
+ - Creative SoundBlaster 128PCI (OSS 3.9.x, ALSA 0.5.x, ALSA 0.9.x)
+ - M-Audio Delta 1010		(OSS 3.9.x, ALSA 0.9.x)
+ - C-Media CMI8738		(OSS 3.9.x, ALSA 0.9.x)
+
+
+Server module command line parameters:
+
+	soundsrv2:
+
+		-D		Start as daemon process
+		--version	Print version information
+		--help		Display help
+
+	streamdist:
+
+		-D		Start as daemon process
+		--version	Print version information
+		--help		Display help
+
+	soundproxy:
+
+		-D		Start as daemon process
+		--version	Print version information
+		--help		Display help
+
+	uiserv:
+
+		-D		Start as daemon process
+		--debug		Print debug information
+		--version	Print version information
+		--help		Display help
+
+	locate:
+
+		--debug		Print debug information
+		--version	Print version information
+
+	savesrv:
+
+		-D		Start as daemon process
+		--rt		Use realtime scheduling
+		--version	Print version information
+		--help		Display help
+
+	beamsrv:
+
+		--version	Print version information
+		--help		Display help
+
+Available userinterface (UI) modules:
+
+	beamaudioui:
+
+		Beamformed audio. You can listen directed audio using this
+		module.
+
+	guidir:
+
+		Direction finding. Use this to find target directions and
+		track target movements.
+
+	guilevel:
+
+		Level histogram. Draws level-time graph using specified
+		algorithm and integration time.
+
+	guilocate:
+
+		Target locator. Draws direction information of multiple
+		sensors to single area matrix.
+
+	guilofar:
+
+		LOFAR/DEMON spectrum display. Draws narrowband spectrograms
+		using different algorithms. (LOFAR = Low Frequency Analysis
+		And Recording, DEMON = DEMOdulated Noise)
+		This is used to detect and indentify targets. You can use this
+		to find propeller blade counts, blade and propeller shaft
+		rates, engine type, cylinder count, crankshaft rate, firing
+		rate, gearbox ratio, etc...
+
+	guispect:
+
+		Spectrogram display. Draws wideband spectrograms. Mainly
+		useful for transient identification and analysis.
+
+	soundui:
+
+		Multichannel interface for raw audio. You can listen the raw
+		audio using this one. You can also apply equalizations, etc.
+		This is very sensitive to operating system latencies, because
+		I have tried to minimize latencies in this module to allow
+		user to measure arrival time differences between different
+		sensors.
+
+
+Commandline tools:
+
+	convpic:
+
+		Converts saved LOFAR, DEMON, spectrogram or time-bearing
+		pictures to ones with associated information.
+
+		-l		Source is LOFAR
+		-d		Source is DEMON
+		-s		Source is spectrogram
+		-b		Source is time-bearing
+		-<pagesize>	Postscript pagesize (A4, Letter, etc.)
+		-2		Conver to 2-color image
+
+		For example:
+
+			convpic -l testlofar.tif lofar.tif
+
+		converts testlofar.tif to lofar.tif.
+
+		See ImageMagick documentation for format details.
+
+You can test soundsrv/soundsrv2 by using testsnd, it receives data from
+soundsrv and plays it.
+
+In userinterface modules enter <host or IP>:<port> of uiserv to server entry,
+set all settings and press connect button. To change settings, make changes
+and press connect again.
+
+In soundui enter <host or IP>:<port> of soundsrv or soundproxy to server entry
+and press connect button. To change server or channel press connect again with
+new settings. Other controls work in realtime. You can use curve to draw your
+desired frequency response using splines. In practice, there is no link
+between slider control Eq and curve Eq. If you specify -1 as DeviceBase in
+configuration file, then soundui uses it's internal interleaver and specified
+output device, otherwise it uses specified device as base name and DeviceBase
+as base number for SoftOSS virtual mixer device. For example, if you have
+"/dev/dsp" as Device and "3" as DeviceBase with stereo device, then soundui
+will use /dev/dsp3 for left channel and /dev/dsp4 for right channel. You must
+have soundui as setuid-root to get priority setting work. Run 
+"chown root soundui ; chmod u+s soundui" as root to set.
+
+Kaiser window needs beta as parameter (good values 0.0 (rectangle) - 7.04 
+(Blackman)), bigger values give narrower windows. Kaiser-Bessel window needs
+alpha as parameter (good values 2.0 - 4.0), bigger values give narrower
+windows.
+
+There are two background noise estimation and removal algorithms available. 
+TPSW (Two-Pass Split-Window) is faster one. It needs three parameters;
+alpha (multiplier for rejecting signals from local mean), mean window length
+and gap between mean window halfs. OTA (Order-Truncate-Average) takes much
+more CPU time, but gives better results with weak signals. It needs two
+parameters; alpha and mean window length. There are also two experimental
+algorithms called Diff (Differential) and InvDiff (Inverse Differential).
+
+LOFAR/DEMON has two kinds of harmonic cursors. 11 line version can be opened
+by using left mouse button and moved using right mouse button. There is also
+"infinite" line cursor which can be opened using middle mouse button.
+Cursor center frequency is displayed on statusline as "c = xx Hz" and harmonic
+base frequency as "d = xx Hz".
+
+
+NOTE: 
+
+	* direction and locate support only dipole and line arrays

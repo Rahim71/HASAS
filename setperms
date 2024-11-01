@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+chown root soundsrv soundsrv2 soundsrva comedisrv soundproxy streamdist savesrv
+chmod u+s soundsrv soundsrv2 soundsrva comedisrv soundproxy streamdist savesrv

@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+SOUNDSRV=soundsrv2
+#SOUNDSRV=soundsrva
+#
+echo "0" >/tmp/uiserv.shutdown
+sleep 1
+echo "0" >/tmp/streamdist.shutdown
+sleep 1
+echo "0" >/tmp/$SOUNDSRV.shutdown
+sleep 1
+if [ -f /tmp/uiserv.shutdown ]; then
+	echo "uiserv forced shutdown"
+	killall uiserv
+	rm -f /tmp/uiserv.shutdown
+fi
+if [ -f /tmp/streamdist.shutdown ]; then
+	echo "streamdist forced shutdown"
+	killall streamdist
+	rm -f /tmp/streamdist.shutdown
+fi
+if [ -f /tmp/$SOUNDSRV.shutdown ]; then
+	echo "soundsrv forced shutdown"
+	killall $SOUNDSRV
+	rm -f /tmp/$SOUNDSRV.shutdown
+fi
+

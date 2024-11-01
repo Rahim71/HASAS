@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+SOUNDSRV=soundsrv2
+#SOUNDSRV=soundsrva
+#
+./$SOUNDSRV &
+sleep 1
+./streamdist &
+sleep 1
+./uiserv --debug &

@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+export LD_PRELOAD="libstdc++.so.5"
+xmms
